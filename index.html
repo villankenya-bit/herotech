@@ -45,28 +45,93 @@
             position: relative;
         }
         
-        .header-buttons {
+        .menu-toggle {
             position: absolute;
             top: 20px;
             right: 20px;
-            display: flex;
-            gap: 10px;
-        }
-        
-        .toggle-mode, .download-app {
-            background: var(--accent-color);
-            color: white;
+            background: none;
             border: none;
-            padding: 10px 15px;
+            color: var(--text-color);
+            font-size: 24px;
             cursor: pointer;
+            padding: 10px;
             border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
+            transition: background-color 0.2s;
         }
         
-        .toggle-mode:hover, .download-app:hover {
-            background: var(--hover-bg);
+        .menu-toggle:hover {
+            background-color: var(--hover-bg);
+        }
+        
+        .drawer {
+            position: fixed;
+            top: 0;
+            right: -300px; /* Hidden by default */
+            width: 300px;
+            height: 100%;
+            background-color: var(--card-bg);
+            border-left: 1px solid var(--border-color);
+            transition: right 0.3s ease;
+            z-index: 1100;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        
+        .drawer.open {
+            right: 0;
+        }
+        
+        .drawer-close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: none;
+            border: none;
             color: var(--text-color);
+            font-size: 24px;
+            cursor: pointer;
+        }
+        
+        .drawer ul {
+            list-style: none;
+            padding: 0;
+            margin: 40px 0 0 0;
+        }
+        
+        .drawer li {
+            margin-bottom: 20px;
+        }
+        
+        .drawer a, .drawer button {
+            color: var(--text-color);
+            text-decoration: none;
+            background: none;
+            border: none;
+            padding: 10px 0;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            text-align: left;
+            transition: color 0.2s;
+        }
+        
+        .drawer a:hover, .drawer button:hover {
+            color: var(--accent-color);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1050;
+        }
+        
+        .overlay.active {
+            display: block;
         }
         
         main {
@@ -186,6 +251,11 @@
             margin-bottom: 5px;
         }
         
+        /* Tawk.to Widget Styling */
+        .tawk-min-container {
+            bottom: 90px !important; /* Adjust to clear the bottom nav (assuming nav height ~80px) */
+        }
+        
         @media (max-width: 768px) {
             .cards-grid {
                 grid-template-columns: 1fr;
@@ -195,16 +265,14 @@
                 padding: 10px;
             }
             
-            .header-buttons {
+            .menu-toggle {
                 top: 10px;
                 right: 10px;
-                flex-direction: column;
-                gap: 5px;
             }
             
-            .toggle-mode, .download-app {
-                padding: 8px 12px;
-                font-size: 14px;
+            .drawer {
+                width: 250px;
+                right: -250px;
             }
             
             .bottom-nav {
@@ -218,18 +286,33 @@
             .nav-item {
                 font-size: 10px;
             }
+            
+            .tawk-min-container {
+                bottom: 70px !important; /* Adjust for mobile nav height */
+            }
         }
     </style>
 </head>
 <body>
     <header>
-        <div class="header-buttons">
-            <button class="toggle-mode" onclick="toggleMode()">Toggle Light/Dark Mode</button>
-            <a href="https://web2apkpro.com/public_download.php?project_id=2465&amp;token=e4ba0c1fa6" class="download-app" target="_blank">Download the App</a>
-        </div>
+        <button class="menu-toggle" onclick="toggleDrawer()"><i class="fas fa-bars"></i></button>
         <h1>Welcome to Herotech</h1>
         <p>Your all-in-one platform for coding, editing, and developer collaboration tools.</p>
     </header>
+    
+    <div class="overlay" id="overlay" onclick="toggleDrawer()"></div>
+    
+    <div class="drawer" id="drawer">
+        <button class="drawer-close" onclick="toggleDrawer()"><i class="fas fa-times"></i></button>
+        <ul>
+            <li><button onclick="toggleMode()">Toggle Light/Dark Mode</button></li>
+            <li><a href="https://web2apkpro.com/public_download.php?project_id=2465&amp;token=e4ba0c1fa6" target="_blank">Download the App</a></li>
+            <li><a href="#help">Help Guide</a></li>
+            <li><a href="mailto:support@herotech.com">Contact Us</a></li>
+            <li><a href="#privacy">Privacy Policy</a></li>
+            <li><a href="#terms">Terms of Service</a></li>
+        </ul>
+    </div>
     
     <main>
         <section id="intro">
@@ -246,24 +329,54 @@
         </div>
         
         <section id="help">
-            <h2>Help Guide: How to Use Herotech</h2>
-            <p>This guide will walk you through getting started with Herotech and explain the functionality of each navigation option. Herotech serves as a central hub linking to specialized tools. To use the platform:</p>
+            <h2>Help Guide: Getting Started with Herotech</h2>
+            <p>Welcome to Herotech. This guide will help you get familiar with the platform and make the most of our tools. Let's get you set up.</p>
+            
+            <h3>Quick Start</h3>
+            <p>Here's how to begin:</p>
             <ul>
-                <li><strong>Getting Started:</strong> Use the bottom navigation icons to access the respective tools. External tools open in a new tab. No account is required for basic access, but some features may prompt registration.</li>
-                <li><strong>Browser Compatibility:</strong> Use a modern browser like Chrome, Firefox, or Edge for the best experience.</li>
-                <li><strong>Troubleshooting:</strong> If a tool doesn't load, check your internet or refresh. Refer to individual tool docs for support.</li>
-                <li><strong>Dark Mode:</strong> Toggle the mode in the header for your preferred viewing experience.</li>
-                <li><strong>Mobile App:</strong> Download the Herotech app from the button in the header for on-the-go access.</li>
+                <li><strong>Access Tools:</strong> Use the icons at the bottom of the page to open any tool. They will launch in a new tab for easy switching.</li>
+                <li><strong>No Sign-Up Required:</strong> Most tools are available right away. Some may require an account for advanced features.</li>
+                <li><strong>Best Browsers:</strong> For the best experience, use Chrome, Firefox, or Edge on desktop or mobile.</li>
             </ul>
             
-            <h3>Tool Explanations</h3>
+            <h3>What Each Tool Does</h3>
+            <p>A quick overview of our tools:</p>
             <ul>
-                <li><strong>Code Scribe Tome (https://code-scribe-tome.lovable.app/):</strong> AI assistant for scribing, debugging, and generating code. Ideal for quick documentation or automation.</li>
-                <li><strong>Spark Editor Live (https://spark-editor-live.lovable.app/):</strong> Collaborative editor with live syncing, version history, and chat for team projects.</li>
-                <li><strong>DevConnect Earn (https://devconnect-earn.lovable.app/):</strong> Network with devs, take on bounties, and earn from challenges or freelance gigs.</li>
-                <li><strong>Survey (https://stack-quiz-prize.lovable.app/):</strong> Test your programming skills with our full stack surveys and achieve the website development certificate.</li>
-                <li><strong>Help:</strong> This section provides setup instructions, navigation details, and tips. Scroll here anytime for reference.</li>
+                <li><strong>Code Scribe:</strong> An AI assistant for writing, debugging, and generating code snippets. Useful for quick coding tasks or automation.</li>
+                <li><strong>Spark Editor:</strong> A collaborative editor with real-time syncing, version history, and chat. Ideal for team projects.</li>
+                <li><strong>DevConnect:</strong> Connect with developers, take on bounties, and earn rewards. A place to monetize your skills.</li>
+                <li><strong>Survey:</strong> Test your programming skills with quizzes and earn a certificate in website development.</li>
             </ul>
+            
+            <h3>Troubleshooting Tips</h3>
+            <p>If you run into issues:</p>
+            <ul>
+                <li><strong>Tool Won't Load?</strong> Check your internet and refresh the page. Try a different browser if needed.</li>
+                <li><strong>Dark Mode:</strong> Use the toggle in the top-right for a different theme.</li>
+                <li><strong>Mobile Access:</strong> Download the app from the header for better mobile use.</li>
+                <li><strong>Need Help?</strong> Refer back to this guide or use the chat widget for support.</li>
+            </ul>
+            
+            <h3>Pro Tips</h3>
+            <p>To get more out of Herotech:</p>
+            <ul>
+                <li>Bookmark tools you use often.</li>
+                <li>Check each tool's help sections for more details.</li>
+                <li>Join the community to share ideas.</li>
+            </ul>
+            
+            <p>That's the basics. If you have questions, feel free to reach out. Enjoy exploring!</p>
+        </section>
+        
+        <section id="privacy" style="display: none;">
+            <h2>Privacy Policy</h2>
+            <p>Herotech respects your privacy. We collect minimal data to provide our services. For full details, please review our complete privacy policy.</p>
+        </section>
+        
+        <section id="terms" style="display: none;">
+            <h2>Terms of Service</h2>
+            <p>By using Herotech, you agree to our terms. We provide tools for development and collaboration. For full terms, please review our complete terms of service.</p>
         </section>
     </main>
     
@@ -287,12 +400,19 @@
     </nav>
     
     <footer>
-        <p>© 2025 Herotech. All rights reserved. | Today: Sunday, October 5, 2025</p>
+        <p>© 2025 Herotech. All rights reserved. | info @ www.jutechsweb.com</p>
     </footer>
 
     <script>
         function toggleMode() {
             document.body.classList.toggle('light-mode');
+        }
+        
+        function toggleDrawer() {
+            const drawer = document.getElementById('drawer');
+            const overlay = document.getElementById('overlay');
+            drawer.classList.toggle('open');
+            overlay.classList.toggle('active');
         }
     </script>
     <!--Start of Tawk.to Script-->
@@ -320,4 +440,3 @@
     </script>
 </body>
 </html>
-
